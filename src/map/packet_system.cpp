@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
 Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -1549,9 +1549,9 @@ void SmallPacket0x04B(map_session_data_t* session, CCharEntity* PChar, CBasicPac
     // uint32  msg_request_len = data.ref<uint32>(0x14); // The total requested size of send to the client..
 
     if (msg_language == 0x02)
+    {
         PChar->pushPacket(new CServerMessagePacket(map_config.server_message, msg_language, msg_timestamp, msg_offset));
-    else
-        PChar->pushPacket(new CServerMessagePacket(map_config.server_message_fr, msg_language, msg_timestamp, msg_offset));
+    }
 
     PChar->pushPacket(new CCharSyncPacket(PChar));
 
@@ -1587,6 +1587,13 @@ void SmallPacket0x04D(map_session_data_t* session, CCharEntity* PChar, CBasicPac
     {
         return;
     }
+
+    if (PChar->m_GMlevel == 0 && !PChar->loc.zone->CanUseMisc(MISC_AH) && !PChar->loc.zone->CanUseMisc(MISC_MOGMENU))
+    {
+        ShowDebug(CL_CYAN"%s is trying to use the delivery box in a disallowed zone [%s]\n" CL_RESET, PChar->GetName(), PChar->loc.zone->GetName());
+        return;
+    }
+
 
     // 0x01 - Send old items..
     // 0x02 - Add items to be sent..
@@ -2238,7 +2245,7 @@ void SmallPacket0x04E(map_session_data_t* session, CCharEntity* PChar, CBasicPac
     // 0x0A - Retrieve List of Items Sold By Player
     // 0x0B - Proof Of Purchase
     // 0x0E - Purchasing Items
-    // 0x0С - Cancel Sale
+    // 0x0C - Cancel Sale
     // 0x0D - Update Sale List By Player
 
     switch (action)
